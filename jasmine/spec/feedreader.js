@@ -154,16 +154,22 @@ $(function() {
 
     describe('New Feed Selection', function() {
         debugArray = []
+        newarray=[]
         ajaxlooper2();
         it('is different from the others', function(done) {
-            var newarray = debugArray
+
+            for (element in debugArray){
+                newarray.push(debugArray[element].title);
+            }
+            console.log(newarray);
+            newnewarray=newarray
                 .map(function(content) {
                     return {
                         count: 1,
                         content: content
                     }
                 });
-            newarray.reduce(function(a, b) {
+            newnewarray.reduce(function(a, b) {
                 a[b.content] = (a[b.content] || 0) + b.count;
                 expect(a[b.content]).toBe(1);
                 return a;
