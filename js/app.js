@@ -12,7 +12,7 @@ var allFeeds = [
         name: 'Udacity Blog',
         url: 'http://blog.udacity.com/feed'
     }, {
-        name: 'CSS Tricks',
+        name: 'Udacity Blog',
         url: 'http://blog.udacity.com/feed'
     }, {
         name: 'HTML5 Rocks',
@@ -30,7 +30,7 @@ var allFeeds = [
  */
 function init() {
     // Load the first feed we've defined (index of 0).
-    loadFeed(0);
+    loadFeed(0, function(entries){console.log(entries)});
 }
 
 /* This function performs everything necessary to load a
@@ -41,6 +41,7 @@ function init() {
  * This function all supports a callback as the second parameter
  * which will be called after everything has run successfully.
  */
+
  function loadFeed(id, cb) {
      var feedUrl = allFeeds[id].url,
          feedName = allFeeds[id].name;
@@ -70,10 +71,11 @@ function init() {
                      container.append(entryTemplate(entry));
                  });
                  if (cb) {
-                     cb();
+                     cb(entries);
                  }
                },
        error: function (result, status, err){
+            $('body').append("<h3 class='warning'>Oh No! Something went wrong with the "+ allFeeds[id].name+' feed!</h3></div>')
                  //run only the callback without attempting to parse result due to error
                  if (cb) {
                      cb();

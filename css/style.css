@@ -81,6 +81,15 @@ h2 {
     transition: transform .3s;
 }
 
+.warning{
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    color: red;
+    z-index: 1;
+}
+
 .feed {
     margin: 4em 0 0;
 }

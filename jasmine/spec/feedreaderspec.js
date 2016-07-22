@@ -7,6 +7,7 @@
  * since some of these tests may require DOM elements. We want
  * to ensure they don't run until the DOM is ready.
  */
+
 $(function() {
     /* This is our first test suite - a test suite just contains
      * a related set of tests. This suite is all about the RSS
@@ -26,7 +27,7 @@ $(function() {
         });
 
 
-        it("should have defined URL and the URL is an empty string", function() {
+        it("should have defined URL and the URL is not an empty string", function() {
             for (element in allFeeds) {
                 expect(allFeeds[element].url).toBeDefined();
                 expect(allFeeds[element].url.length).not.toBe(0);
@@ -115,6 +116,7 @@ $(function() {
         }
     });
 
+
     /* TODO: Write a new test suite named "Initial Entries" */
     /* TODO: Write a test that ensures when the loadFeed
      * function is called and completes its work, there is at least
@@ -123,58 +125,50 @@ $(function() {
      * the use of Jasmine's beforeEach and asynchronous done() function.
      */
 
-    ajaxcallback = function(index) {
-        var content = {};
-        var titleStr = '';
-        var url = '';
-        for (var j = 0, len= $('.feed').children('.entry-link').children().length; j<len; j++) {
-            innertext = $('.feed').children('.entry-link').children()[j].innerText;
-            innerurl = $('.feed').children('.entry-link')[j].href;
-            titleStr += innertext;
-            url += innerurl;
-
-        }
-        content.title = titleStr;
-
-        content.url = url
-        debugArray[index] = content;
-        console.log(titleStr);
+    ajaxcallback = function(entries, debugArray) {
+        debugArray.push(entries);
     }
-
-    ajaxlooper2 = function() {
-        //=4
-        beforeEach(function(done) {
-            for (var i = 0, len = allFeeds.length; i < len; i++) {
-                loadFeed(i, ajaxcallback(i))
-            }
-            done(); //function waits until done is called then run the tests.  
-        })
-    }
-
-
+            
+             //waits until all ajax calls are done then run the tests.  
+    
+   
     describe('New Feed Selection', function() {
-        debugArray = []
-        newarray=[]
-        ajaxlooper2();
-        it('is different from the others', function(done) {
-
-            for (element in debugArray){
-                newarray.push(debugArray[element].title);
+        var debugArray = []
+        var newarray=[]
+        var counter= 0;
+        beforeEach(function(done){  
+            for (var i = 0, len = allFeeds.length; i < len; i++) {
+                loadFeed(i, function(entries){
+                    ajaxcallback(entries, debugArray);
+                    counter++;
+                    if (counter==len){
+                        done();
+                    }
+                })
             }
-            console.log(newarray);
+        
+        })
+
+        it('is different from the others', function(done) {
+            newnewarray=[]
+            debugArray.forEach(function(element){
+                newarray.push(JSON.stringify(element));
+            });
+           
             newnewarray=newarray
                 .map(function(content) {
                     return {
                         count: 1,
-                        content: content
+                        //unfortunately we can't just compare objects because in content there is a timestamp
+                        //when it got passed through, so here we are just looking at the first 500 characters. 
+                        content: content.slice(0,500)
                     }
                 });
-            newnewarray.reduce(function(a, b) {
+            newnewarray.reduce(function(a, b, index) {
                 a[b.content] = (a[b.content] || 0) + b.count;
                 expect(a[b.content]).toBe(1);
                 return a;
-            });
-
+            }, {});
             done();
         })
     })
