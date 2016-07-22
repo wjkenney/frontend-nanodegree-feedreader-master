@@ -1,3 +1,13 @@
+// Hello.
+//
+// This is JSHint, a tool that helps to detect errors and potential
+// problems in your JavaScript code.
+//
+// To start, simply enter some JavaScript anywhere on this page. Your
+// report will appear on the right side.
+//
+// Additionally, you can toggle specific options in the Configure
+// menu.
 /* feedreader.js
  *
  * This is the spec file that Jasmine will read and contains
@@ -7,7 +17,6 @@
  * since some of these tests may require DOM elements. We want
  * to ensure they don't run until the DOM is ready.
  */
-
 $(function() {
     /* This is our first test suite - a test suite just contains
      * a related set of tests. This suite is all about the RSS
@@ -28,10 +37,10 @@ $(function() {
 
 
         it("should have defined URL and the URL is not an empty string", function() {
-            for (element in allFeeds) {
+            for (var i = 0, len = allFeeds.length; i < len; i++) {
                 expect(allFeeds[element].url).toBeDefined();
                 expect(allFeeds[element].url.length).not.toBe(0);
-            };
+            }
         });
 
         /* TODO: Write a test that loops through each feed
@@ -39,7 +48,7 @@ $(function() {
          * and that the URL is not empty.
          */
         it('should have defined name and name is not empty string', function() {
-            for (element in allFeeds) {
+            for (var i = 0, len = allFeeds.length; i < len; i++) {
                 expect(allFeeds[element].name).toBeDefined();
                 expect(allFeeds[element].name.length).not.toBe(0);
             }
@@ -63,15 +72,15 @@ $(function() {
 
 
         it('appears when clicked', function() {
-            $('.menu-icon-link').trigger('click')
+            $('.menu-icon-link').trigger('click');
             expect($('body').hasClass('menu-hidden')).toBeFalsy();
-        })
+        });
 
 
         it('disappears when clicked', function() {
             $('.menu-icon-link').trigger('click');
             expect($('body').hasClass('menu-hidden')).toBeTruthy();
-        })
+        });
     });
     /* TODO: Write a new test suite named "The menu" */
 
@@ -108,9 +117,10 @@ $(function() {
             });
 
         });
-    }
+    };
 
     describe('Initial-Entries', function() {
+        $('.feed').empty();
         for (var i = 0, len = allFeeds.length; i < len; i++) {
             ajaxlooper1(i);
         }
@@ -125,53 +135,48 @@ $(function() {
      * the use of Jasmine's beforeEach and asynchronous done() function.
      */
 
-    ajaxcallback = function(entries, debugArray) {
-        debugArray.push(entries);
-    }
-            
-             //waits until all ajax calls are done then run the tests.  
-    
-   
+    ajaxcallback = function(debugArray) {
+        debugArray.push($('.feed').find('h2')[0].textContent);
+    };
+
+    //waits until all ajax calls are done then run the tests.  
+
+
     describe('New Feed Selection', function() {
-        var debugArray = []
-        var newarray=[]
-        var counter= 0;
-        beforeEach(function(done){  
+        $('.feed').empty();
+        var debugArray = [];
+        var newarray = [];
+        var counter = 0;
+        beforeEach(function(done) {
             for (var i = 0, len = allFeeds.length; i < len; i++) {
-                loadFeed(i, function(entries){
-                    ajaxcallback(entries, debugArray);
+                loadFeed(i, function() {
+                    ajaxcallback(debugArray, len);
                     counter++;
-                    if (counter==len){
+                    if (counter == len) {
                         done();
                     }
-                })
+                });
             }
-        
-        })
+
+        });
 
         it('is different from the others', function(done) {
-            newnewarray=[]
-            debugArray.forEach(function(element){
-                newarray.push(JSON.stringify(element));
-            });
-           
-            newnewarray=newarray
+
+            newarray = debugArray
                 .map(function(content) {
                     return {
                         count: 1,
-                        //unfortunately we can't just compare objects because in content there is a timestamp
-                        //when it got passed through, so here we are just looking at the first 500 characters. 
-                        content: content.slice(0,500)
-                    }
+                        content: content
+                    };
                 });
-            newnewarray.reduce(function(a, b, index) {
+            newarray.reduce(function(a, b, index) {
                 a[b.content] = (a[b.content] || 0) + b.count;
                 expect(a[b.content]).toBe(1);
                 return a;
             }, {});
             done();
-        })
-    })
+        });
+    });
 
     /* TODO: Write a new test suite named "New Feed Selection"*/
 

@@ -12,8 +12,8 @@ var allFeeds = [
         name: 'Udacity Blog',
         url: 'http://blog.udacity.com/feed'
     }, {
-        name: 'Udacity Blog',
-        url: 'http://blog.udacity.com/feed'
+        name: 'CSS Tricks',
+        url: 'http://feeds.feedburner.com/CssTricks'
     }, {
         name: 'HTML5 Rocks',
         url: 'http://feeds.feedburner.com/html5rocks'
@@ -30,7 +30,7 @@ var allFeeds = [
  */
 function init() {
     // Load the first feed we've defined (index of 0).
-    loadFeed(0, function(entries){console.log(entries)});
+    loadFeed(0);
 }
 
 /* This function performs everything necessary to load a
@@ -71,7 +71,7 @@ function init() {
                      container.append(entryTemplate(entry));
                  });
                  if (cb) {
-                     cb(entries);
+                     cb();
                  }
                },
        error: function (result, status, err){
