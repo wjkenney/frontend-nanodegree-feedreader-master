@@ -106,11 +106,11 @@ ajaxLooper = function(i) {
     });
 
 
+//this is the ajax callback for unique entry testing, it is going to look for the first title of the feed and push it into our sample array.
     ajaxCallback = function(debugArray) {
         debugArray.push($('.feed').find('h2')[0].textContent);
     };
-
-    //waits until all ajax calls are done then run the tests.  
+ 
 
 
     describe('New Feed Selection', function() {
@@ -121,16 +121,17 @@ ajaxLooper = function(i) {
         beforeEach(function(done) {
             for (var i = 0, len = allFeeds.length; i < len; i++) {
                 loadFeed(i, function() {
-                    ajaxCallback(debugArray, len);
+                    ajaxCallback(debugArray);
                     counter++;
                     if (counter === len) {
                         done();
                     }
                 });
             }
-
         });
 
+        //here in are spec test we turn each entry into a key in an object. Keys that appear twice will trigger a failed test.  
+        //(eg [John, Bob, Patrick, Bob] would be false.)  
         it('is different from the others', function(done) {
 
             newarray = debugArray
