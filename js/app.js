@@ -75,7 +75,6 @@ function init() {
                  }
                },
        error: function (result, status, err){
-            $('body').append("<h3 class='warning'>Oh No! Something went wrong with the "+ allFeeds[id].name+' feed!</h3></div>')
                  //run only the callback without attempting to parse result due to error
                  if (cb) {
                      cb();
